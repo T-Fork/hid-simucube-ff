@@ -1,10 +1,18 @@
-# Poor attemt at a Linux kernel driver to add support for Simucube wheelbases since 
-# I can't get Linux and Steam games to behave with my peripherals e.g. wheelbase, wheel, pedals or joystick. 
-# Proton borked pedals after 5.13, and as of writing still persists in 8.0-4.
-# I will handle my specific peripherals separately Simfeel pedals / Polsimer Wheel and VKB joystick via
-# HID-BPF instead, since these have incorrect descriptors according to Linux
-# https://github.com/ValveSoftware/steam-runtime/issues/561
-# https://github.com/ValveSoftware/Proton/issues/5126
+## General
+Mostly copy-pasted from [hid-fanatecff](https://github.com/gotzl/hid-fanatecff) which in turn was copy paste of [new-lg4ff](https://github.com/berarma/new-lg4ff)
+Therefore a poor attemt at a Linux kernel driver to add support for Simucube wheelbases, because Proton borked pedals after 5.13, and as of writing still persists in 8.0-4.
+
+## Read more here about the issue
+https://github.com/ValveSoftware/steam-runtime/issues/561
+https://github.com/ValveSoftware/Proton/issues/5126
+
+# Possible workaround
+## With Proton 7/8 the wheel is not detected properly when starting a game for the first time (ie, when a new proton-prefix is created). A possible workaround is to first 
+## start the game with Proton 6, and then switch to a later one.
+
+However I can't get Linux and Steam games to behave with my peripherals e.g. wheelbase, wheel, pedals or joystick. But I will handle my specific peripherals separately 
+Simfeel pedals / Polsimer Wheel and VKB joystick via
+HID-BPF instead, since these have incorrect descriptors according to Linux
 
 ## Known devices
 
@@ -32,14 +40,7 @@ This installs the kernel module `hid-simucube.ko` in the `hid` dir of the runnin
 The driver should get loaded automatically when the wheel is plugged.
 
 ### Packaging
-# If I get a working driver I'll might try and make a dkms-package, but that is a big big if.
-
-### General
-
-Support for a bunch of effects, mostly copy-pasted from [new-lg4ff](https://github.com/berarma/new-lg4ff). 
-Currently not supported effects: FF_FRICTION, FF_INERTIA
-
-With Proton 7/8 the wheel is not detected properly when starting a game for the first time (ie, when a new proton-prefix is created). A possible workaround is to first start the game with Proton 6, and then switch to a later one.
+## If I get a working driver I'll might try and make a dkms-package, but that is a big big if.
 
 ### FFB in specific Games
 
@@ -55,8 +56,8 @@ Games that will be tested by me:
 Advanced functions of wheels/bases are available via sysfs. Base sysfs path:
 
 `/sys/module/hid_simucube2/drivers/hid:simucube_2_sport/0003:16d0:0d61.*/`
-# is 0003 static or unique depending on peripherals
-# seems like it, since dmesg | grep "peripheral" always shows hid-generic 0003:xxxx:yyy. Same goes for "input:" entry where these contain ref. to 0003
+### is 0003 static or unique depending on peripherals
+### seems like it, since dmesg | grep "peripheral" always shows hid-generic 0003:xxxx:yyy. Same goes for "input:" entry where these contain ref. to 0003
 
 #### Common
 
@@ -74,7 +75,7 @@ Advanced functions of wheels/bases are available via sysfs. Base sysfs path:
 
 * loadcell adjustment: `load` (no readback yet)
 
-# I might try and fork gotzl's tool project if I get as far as testing this driver.
+### I've forked gotzl's tool project.
 To access advanced functions from user space please see the [hid-simucube-tools](https://github.com/gotzl/hid-fanatecff-tools) project which also aims to support LED/Display access from games.
 
 ## Disclaimer
