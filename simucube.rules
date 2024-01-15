@@ -1,0 +1,19 @@
+ACTION!="add|change", GOTO="simucube_end"
+SUBSYSTEM=="hid", DRIVER=="simucube", GOTO="simucube_module_settings"
+SUBSYSTEM=="input", DRIVERS=="simucube", GOTO="simucube_input_settings"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="16d0", MODE="0666"
+# MODE="0660" should suffice, but will leave as is for the time being.
+GOTO="simucube_end"
+
+LABEL="simucube_module_settings"
+# let everyone in games group read/write device attributes, such as tuning-menu entries, range
+# this might not be applicable for Simucube users that dont use wireless wheels.
+RUN+="/bin/sh -c 'cd %S%p; chown -f :games range load tuning_menu/*'"
+GOTO="simucube_end"
+
+LABEL="simucube_input_settings"
+# remove deadzone/fuzz
+RUN{program}+="/usr/bin/evdev-joystick --evdev $devnode --deadzone 0 --fuzz 0"
+GOTO="simucube_end"
+
+LABEL="simucube_end"
